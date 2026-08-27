@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ukinami Manga - ตะกร้าสินค้า</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Prompt', sans-serif; }
+        body { background-color: #121212; color: #e0e0e0; }
+
+        header { 
+            background-color: #1f1f1f; 
+            padding: 15px 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+        }
+        .logo { font-size: 24px; font-weight: 600; color: #ff4757; text-decoration: none; }
+        
+        .search-bar { 
+            position: relative; 
+            display: flex; 
+            width: 40%; 
+        }
+        .search-bar input { 
+            width: 100%; 
+            padding: 8px 15px; 
+            border: none; 
+            border-radius: 20px 0 0 20px; 
+            outline: none; 
+            background: #2f3542; 
+            color: #fff; 
+        }
+        .search-bar button { 
+            padding: 8px 15px; 
+            border: none; 
+            background-color: #ff4757; 
+            color: white; 
+            border-radius: 0 20px 20px 0; 
+            cursor: pointer; 
+            transition: 0.3s; 
+        }
+        .search-bar button:hover { background-color: #ff6b81; }
+
+        .search-results-dropdown {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            width: 100%;
+            background-color: #1f1f1f;
+            border: 1px solid #333;
+            border-radius: 8px;
+            max-height: 250px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+            display: none;
+        }
+        .search-result-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            color: #e0e0e0;
+            font-size: 14px;
+            border-bottom: 1px solid #2f3542;
+            transition: all 0.2s ease;
+        }
+        .search-result-item:hover { background-color: #ff4757; color: #fff; padding-left: 20px; }
+
+        nav ul { display: flex; list-style: none; gap: 20px; }
+        nav a { color: #e0e0e0; text-decoration: none; font-size: 15px; transition: 0.3s; }
+        nav a:hover, nav a.active { color: #ff4757; }
+
+        .container { width: 90%; max-width: 1000px; margin: 40px auto; min-height: 60vh; }
+        .section-title { font-size: 22px; margin-bottom: 20px; border-left: 4px solid #ff4757; padding-left: 10px; }
+
+        .cart-layout { display: grid; grid-template-columns: 1fr 320px; gap: 30px; }
+        .cart-table-container, .cart-summary { background: #1f1f1f; padding: 25px; border-radius: 10px; }
+
+        .cart-table { width: 100%; border-collapse: collapse; }
+        .cart-table th { text-align: left; padding-bottom: 15px; border-bottom: 1px solid #333; color: #aaa; font-size: 14px; }
+        .cart-table td { padding: 15px 0; border-bottom: 1px solid #2f3542; vertical-align: middle; }
+
+        .item-info { display: flex; align-items: center; gap: 15px; }
+        .item-info img { width: 60px; height: 85px; object-fit: cover; border-radius: 5px; }
+        .item-title { font-size: 15px; color: #fff; font-weight: 500; }
+
+        .qty-control { display: flex; align-items: center; gap: 5px; }
+        .qty-btn { width: 28px; height: 28px; background: #2f3542; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+        .qty-btn:hover { background: #3a404d; }
+        .qty-val { width: 30px; text-align: center; font-size: 14px; }
+
+        .btn-remove { color: #ff4757; background: none; border: none; cursor: pointer; font-size: 18px; margin-left: 10px; }
+        .btn-remove:hover { color: #ff6b81; }
+
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 12px; color: #ccc; font-size: 14px; }
+        .summary-total { font-size: 18px; font-weight: bold; color: #ff4757; border-top: 1px solid #333; padding-top: 15px; margin-top: 15px; }
+
+        .btn-checkout { 
+            width: 100%; 
+            padding: 12px; 
+            background: #ff4757; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            margin-top: 20px; 
+            transition: 0.3s; 
+        }
+        .btn-checkout:hover { background: #ff6b81; }
+
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 15px; }
+            .search-bar { width: 100%; }
+            .cart-layout { grid-template-columns: 1fr; }
+        }
+
+        footer { background-color: #1f1f1f; text-align: center; padding: 20px; margin-top: 50px; color: #a0a0a0; font-size: 14px; }
+        footer a { color: #a0a0a0; text-decoration: none; margin: 0 10px; transition: 0.3s; }
+        footer a:hover { color: #ff4757; }
+    </style>
+</head>
+<link rel="icon" type="image/x-icon" href= "uki.ico">
+<body>
+
+    <header>
+        <a href="index.html" class="logo">Ukinami Manga</a>
+        
+        <form class="search-bar" onsubmit="handleSearch(event)" autocomplete="off">
+            <input type="text" id="search-input" placeholder="ค้นหามังงะที่ต้องการ..." oninput="showLiveSearch(this.value)">
+            <button type="submit">ค้นหา</button>
+            <div id="search-results" class="search-results-dropdown"></div>
+        </form>
+
+        <nav>
+            <ul>
+                <li><a href="index.html">หน้าแรก</a></li>
+                <li><a href="all-manga.html">สินค้าทั้งหมด</a></li>
+                <li><a href="categories.html">หมวดหมู่</a></li>
+                <li><a href="cart.html" class="active">ตะกร้า (<span id="nav-cart-count">0</span>)</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2 class="section-title">ตะกร้าสินค้าของคุณ</h2>
+
+        <div class="cart-layout">
+            <div class="cart-table-container">
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>สินค้า</th>
+                            <th>ราคา</th>
+                            <th>จำนวน</th>
+                            <th>รวม</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="cart-items">
+                        <!-- รายการสินค้าจะมาขึ้นตรงนี้ -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="cart-summary">
+                <h3 style="margin-bottom: 15px; color: #fff;">สรุปรายการสั่งซื้อ</h3>
+                <div class="summary-row">
+                    <span>ราคาสินค้า</span>
+                    <span id="subtotal">0 บาท</span>
+                </div>
+                <div class="summary-row">
+                    <span>ค่าจัดส่ง</span>
+                    <span id="shipping">50 บาท</span>
+                </div>
+                <div class="summary-row summary-total">
+                    <span>ราคารวมทั้งสิ้น</span>
+                    <span id="grand-total">0 บาท</span>
+                </div>
+
+                <button class="btn-checkout" onclick="proceedToCheckout()">ดำเนินการสั่งซื้อ</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Ukinami Manga . All rights reserved.</p>
+        <p>
+            <a href="about.html">เกี่ยวกับเรา</a> | 
+            <a href="contact.html">ติดต่อเรา</a> | 
+            <a href="faq.html">คำถามที่พบบ่อย</a>
+        </p>
+    </footer>
+
+    <script>
+        const searchDatabase = [
+            { id: 1, title: 'หนุ่มเย็บผ้ากับสาวนักคอสเพลย์ เล่ม 5' },
+            { id: 2, title: 'คุณอาเรียโต๊ะข้างๆ พูดรัสเซียฯ เล่ม 4' },
+            { id: 3, title: 'ขังดวลแข้ง Blue Lock เล่ม 26' },
+            { id: 4, title: 'มหาเวทย์ผนึกมาร เล่ม 30' },
+            { id: 5, title: 'Chainsaw Man เล่ม 1' },
+            { id: 6, title: 'เกิดใหม่เป็นลูกโอชิ เล่ม 1' },
+            { id: 7, title: 'คำอธิษฐานในวันที่จากลา เล่ม 1' },
+            { id: 8, title: 'Spy x Family เล่ม 1' },
+            { id: 9, title: 'Kaiju No. 8 เล่ม 1' },
+            { id: 10, title: 'สารภาพรักกับคุณคางุยะซะดีๆ เล่ม 1' },
+            { id: 11, title: 'เกิดชาตินี้พี่ต้องเทพ เล่ม 1' },
+            { id: 12, title: 'Bocchi the Rock! เล่ม 1' },
+            { id: 13, title: 'Tokyo Revengers เล่ม 1' },
+            { id: 14, title: 'ผ่าพิภพไททัน เล่ม 34' },
+            { id: 15, title: 'Overlord เล่ม 1' }
+        ];
+
+        function renderCart() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let tbody = document.getElementById('cart-items');
+            let subtotal = 0;
+
+            if (cart.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:#aaa;">ไม่มีสินค้าในตะกร้า</td></tr>';
+                document.getElementById('subtotal').textContent = '0 บาท';
+                document.getElementById('shipping').textContent = '0 บาท';
+                document.getElementById('grand-total').textContent = '0 บาท';
+                return;
+            }
+
+            tbody.innerHTML = cart.map((item, index) => {
+                let itemTotal = item.price * item.qty;
+                subtotal += itemTotal;
+                return `
+                    <tr>
+                        <td>
+                            <div class="item-info">
+                                <img src="${item.img}" alt="${item.title}">
+                                <div class="item-title">${item.title}</div>
+                            </div>
+                        </td>
+                        <td>${item.price} บาท</td>
+                        <td>
+                            <div class="qty-control">
+                                <button class="qty-btn" onclick="updateQty(${index}, -1)">-</button>
+                                <span class="qty-val">${item.qty}</span>
+                                <button class="qty-btn" onclick="updateQty(${index}, 1)">+</button>
+                            </div>
+                        </td>
+                        <td>${itemTotal} บาท</td>
+                        <td><button class="btn-remove" onclick="removeItem(${index})">&times;</button></td>
+                    </tr>
+                `;
+            }).join('');
+
+            let shipping = 50;
+            document.getElementById('subtotal').textContent = subtotal.toLocaleString() + ' บาท';
+            document.getElementById('shipping').textContent = shipping + ' บาท';
+            document.getElementById('grand-total').textContent = (subtotal + shipping).toLocaleString() + ' บาท';
+        }
+
+        function updateQty(index, change) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart[index].qty += change;
+            if (cart[index].qty <= 0) cart[index].qty = 1;
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+            updateCartCount();
+        }
+
+        function removeItem(index) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+            updateCartCount();
+        }
+
+        function proceedToCheckout() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (cart.length === 0) {
+                alert('กรุณาเลือกสินค้าอย่างน้อย 1 ชิ้นก่อนชำระเงินครับ');
+                return;
+            }
+            window.location.href = 'checkout.html';
+        }
+
+        function updateCartCount() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('nav-cart-count').textContent = totalQty;
+        }
+
+        function showLiveSearch(query) {
+            const resultsBox = document.getElementById('search-results');
+            const cleanQuery = query.trim().toLowerCase();
+
+            if (!cleanQuery) {
+                resultsBox.style.display = 'none';
+                return;
+            }
+
+            const matchedProducts = searchDatabase.filter(item => 
+                item.title.toLowerCase().includes(cleanQuery)
+            );
+
+            if (matchedProducts.length > 0) {
+                resultsBox.innerHTML = matchedProducts.map(item => `
+                    <div class="search-result-item" onclick="window.location.href='product-detail.html?id=${item.id}'">
+                        ${item.title}
+                    </div>
+                `).join('');
+                resultsBox.style.display = 'block';
+            } else {
+                resultsBox.innerHTML = `<div class="search-result-item" style="cursor:default; color:#aaa;">ไม่พบสินค้าที่ค้นหา</div>`;
+                resultsBox.style.display = 'block';
+            }
+        }
+
+        function handleSearch(e) {
+            e.preventDefault();
+            let query = document.getElementById('search-input').value.trim();
+            if (query) {
+                window.location.href = `all-manga.html?search=${encodeURIComponent(query)}`;
+            }
+        }
+
+        document.addEventListener('click', function(e) {
+            const searchBar = document.querySelector('.search-bar');
+            if (searchBar && !searchBar.contains(e.target)) {
+                document.getElementById('search-results').style.display = 'none';
+            }
+        });
+
+        renderCart();
+        updateCartCount();
+    </script>
+</body>
+</html>

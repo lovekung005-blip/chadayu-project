@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ukinami Manga - ชำระเงิน</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Prompt', sans-serif; }
+        body { background-color: #121212; color: #e0e0e0; }
+
+        header { 
+            background-color: #1f1f1f; 
+            padding: 15px 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+        }
+        .logo { font-size: 24px; font-weight: 600; color: #ff4757; text-decoration: none; }
+        .search-bar { display: flex; width: 40%; }
+        .search-bar input { 
+            width: 100%; 
+            padding: 8px 15px; 
+            border: none; 
+            border-radius: 20px 0 0 20px; 
+            outline: none; 
+            background: #2f3542; 
+            color: #fff; 
+        }
+        .search-bar button { 
+            padding: 8px 15px; 
+            border: none; 
+            background-color: #ff4757; 
+            color: white; 
+            border-radius: 0 20px 20px 0; 
+            cursor: pointer; 
+            transition: 0.3s; 
+        }
+        .search-bar button:hover { background-color: #ff6b81; }
+        nav ul { display: flex; list-style: none; gap: 20px; }
+        nav a { color: #e0e0e0; text-decoration: none; font-size: 15px; transition: 0.3s; }
+        nav a:hover, nav a.active { color: #ff4757; }
+
+        .container { width: 90%; max-width: 1000px; margin: 40px auto; }
+        .section-title { font-size: 22px; margin-bottom: 20px; border-left: 4px solid #ff4757; padding-left: 10px; }
+
+        .checkout-layout { display: grid; grid-template-columns: 1fr 350px; gap: 30px; }
+        .form-section, .summary-section { background: #1f1f1f; padding: 25px; border-radius: 10px; }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-size: 14px; color: #ccc; }
+        .form-group input, .form-group textarea { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #333; 
+            border-radius: 5px; 
+            background: #121212; 
+            color: #fff; 
+            font-size: 14px; 
+        }
+        .form-group textarea { height: 80px; resize: none; }
+
+        .checkout-item { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; border-bottom: 1px dashed #333; padding-bottom: 8px; }
+        .summary-total { font-size: 18px; font-weight: bold; color: #ff4757; display: flex; justify-content: space-between; margin-top: 15px; border-top: 1px solid #444; padding-top: 15px; }
+
+        .btn-confirm { 
+            width: 100%; 
+            padding: 12px; 
+            background: #ff4757; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            margin-top: 20px; 
+            transition: 0.3s; 
+        }
+        .btn-confirm:hover { background: #ff6b81; }
+
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 15px; }
+            .search-bar { width: 100%; }
+            .checkout-layout { grid-template-columns: 1fr; }
+        }
+
+        footer { background-color: #1f1f1f; text-align: center; padding: 20px; margin-top: 50px; color: #a0a0a0; font-size: 14px; }
+        footer a { color: #a0a0a0; text-decoration: none; margin: 0 10px; transition: 0.3s; }
+        footer a:hover { color: #ff4757; }
+    </style>
+</head>
+<link rel="icon" type="image/x-icon" href= "uki.ico">
+<body>
+
+  <header>
+        <a href="index.html" class="logo">Ukinami Manga</a>
+        
+        <!-- เปลี่ยนเป็น form ตรงนี้ -->
+        <form class="search-bar" onsubmit="handleSearch(event)">
+            <input type="text" id="search-input" placeholder="ค้นหามังงะที่ต้องการ...">
+            <button type="submit">ค้นหา</button>
+        </form>
+
+        <nav>
+            <ul>
+                <li><a href="index.html">หน้าแรก</a></li>
+                <li><a href="all-manga.html" class="active">สินค้าทั้งหมด</a></li>
+                <li><a href="categories.html">หมวดหมู่</a></li>
+                <li><a href="cart.html">ตะกร้า (<span id="nav-cart-count">0</span>)</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2 class="section-title">ดำเนินการชำระเงิน</h2>
+
+        <div class="checkout-layout">
+            <div class="form-section">
+                <h3 style="margin-bottom: 15px; color: #fff;">ข้อมูลการจัดส่ง</h3>
+                <form id="checkout-form" onsubmit="processOrder(event)">
+                    <div class="form-group">
+                        <label>ชื่อ-นามสกุล</label>
+                        <input type="text" required placeholder="สมชาย ใจดี">
+                    </div>
+                    <div class="form-group">
+                        <label>เบอร์โทรศัพท์</label>
+                        <input type="tel" required placeholder="0812345678">
+                    </div>
+                    <div class="form-group">
+                        <label>ที่อยู่จัดส่ง</label>
+                        <textarea required placeholder="บ้านเลขที่ ถนน แขวง/ตำบล เขต/อำเภอ จังหวัด รหัสไปรษณีย์"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>วิธีชำระเงิน</label>
+                        <select style="width:100%; padding:10px; background:#121212; color:#fff; border:1px solid #333; border-radius:5px;">
+                            <option>โอนเงินผ่านธนาคาร (QR Code)</option>
+                            <option>เก็บเงินปลายทาง (COD)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-confirm">ยืนยันการสั่งซื้อ</button>
+                </form>
+            </div>
+
+            <div class="summary-section">
+                <h3 style="margin-bottom: 15px; color: #fff;">สรุปรายการสั่งซื้อ</h3>
+                <div id="checkout-items"></div>
+                <div class="summary-total">
+                    <span>ราคารวมทั้งสิ้น:</span>
+                    <span id="checkout-total">0 บาท</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Ukinami Manga . All rights reserved.</p>
+        <p>
+            <a href="about.html">เกี่ยวกับเรา</a> | 
+            <a href="contact.html">ติดต่อเรา</a> | 
+            <a href="faq.html">คำถามที่พบบ่อย</a>
+        </p>
+    </footer>
+
+    <script>
+        function renderCheckout() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let container = document.getElementById('checkout-items');
+            let total = 0;
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="color:#aaa;">ไม่มีสินค้าในตะกร้า</p>';
+                document.getElementById('checkout-total').textContent = '0 บาท';
+                return;
+            }
+
+            container.innerHTML = cart.map(item => {
+                let sum = item.price * item.qty;
+                total += sum;
+                return `
+                    <div class="checkout-item">
+                        <span>${item.title} x ${item.qty}</span>
+                        <span>${sum} บาท</span>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('checkout-total').textContent = total.toLocaleString() + ' บาท';
+        }
+
+        function processOrder(e) {
+            e.preventDefault();
+            alert('สั่งซื้อสำเร็จ! ขอบคุณที่ใช้บริการ MangaShop');
+            localStorage.removeItem('cart');
+            window.location.href = 'index.html';
+            localStorage.removeItem('cart'); // ล้างตะกร้าเมื่อสั่งซื้อเสร็จ
+    window.location.href = 'order-success.html'; // พาวาร์ปมาหน้า 7
+        }
+
+        function updateCartCount() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('nav-cart-count').textContent = totalQty;
+        }
+
+        function handleSearch(e) {
+            e.preventDefault();
+            let query = document.getElementById('search-input').value.trim();
+            if (query) {
+                window.location.href = `all-manga.html?search=${encodeURIComponent(query)}`;
+            }
+        }
+
+        renderCheckout();
+        updateCartCount();
+    </script>
+</body>
+</html>

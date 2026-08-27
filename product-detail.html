@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ukinami Manga - รายละเอียดสินค้า</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Prompt', sans-serif; }
+        body { background-color: #121212; color: #e0e0e0; }
+
+        header { 
+            background-color: #1f1f1f; 
+            padding: 15px 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+        }
+        .logo { font-size: 24px; font-weight: 600; color: #ff4757; text-decoration: none; }
+        .search-bar { display: flex; width: 40%; }
+        .search-bar input { 
+            width: 100%; 
+            padding: 8px 15px; 
+            border: none; 
+            border-radius: 20px 0 0 20px; 
+            outline: none; 
+            background: #2f3542; 
+            color: #fff; 
+        }
+        .search-bar button { 
+            padding: 8px 15px; 
+            border: none; 
+            background-color: #ff4757; 
+            color: white; 
+            border-radius: 0 20px 20px 0; 
+            cursor: pointer; 
+            transition: 0.3s; 
+        }
+        .search-bar button:hover { background-color: #ff6b81; }
+        nav ul { display: flex; list-style: none; gap: 20px; }
+        nav a { color: #e0e0e0; text-decoration: none; font-size: 15px; transition: 0.3s; }
+        nav a:hover, nav a.active { color: #ff4757; }
+
+        .container { width: 90%; max-width: 900px; margin: 50px auto; }
+        
+        .product-detail-card { 
+            background-color: #1f1f1f; 
+            border-radius: 12px; 
+            padding: 30px; 
+            display: flex; 
+            gap: 30px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+        }
+
+        .product-cover img { 
+            width: 260px; 
+            height: 370px; 
+            object-fit: cover; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4); 
+        }
+
+        .product-info-detail { flex: 1; display: flex; flex-direction: column; }
+        .detail-title { font-size: 24px; font-weight: 600; color: #fff; margin-bottom: 15px; }
+        .meta-info { font-size: 14px; color: #a0a0a0; margin-bottom: 8px; }
+        .meta-info span { color: #ff4757; }
+        .detail-price { font-size: 28px; font-weight: bold; color: #ff4757; margin: 15px 0; }
+        .detail-desc { font-size: 14px; color: #ccc; line-height: 1.6; margin-bottom: 25px; border-top: 1px solid #333; padding-top: 15px; }
+
+        .qty-control { display: flex; align-items: center; gap: 5px; margin-bottom: 20px; }
+        .qty-btn { width: 35px; height: 35px; background: #2f3542; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        .qty-btn:hover { background: #3a404d; }
+        .qty-input { width: 45px; height: 35px; text-align: center; background: #121212; border: 1px solid #333; color: #fff; border-radius: 4px; font-size: 14px; }
+
+        .btn-add-cart { 
+            background-color: #ff4757; 
+            color: #fff; 
+            border: none; 
+            padding: 12px 25px; 
+            border-radius: 6px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            width: fit-content; 
+        }
+        .btn-add-cart:hover { background-color: #ff6b81; }
+
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 15px; }
+            .search-bar { width: 100%; }
+            .product-detail-card { flex-direction: column; align-items: center; text-align: center; }
+            .product-info-detail { align-items: center; }
+            .btn-add-cart { width: 100%; }
+        }
+
+        footer { background-color: #1f1f1f; text-align: center; padding: 20px; margin-top: 50px; color: #a0a0a0; font-size: 14px; }
+        footer a { color: #a0a0a0; text-decoration: none; margin: 0 10px; transition: 0.3s; }
+        footer a:hover { color: #ff4757; }
+    </style>
+</head>
+<link rel="icon" type="image/x-icon" href= "uki.ico">
+<body>
+
+   <header>
+        <a href="index.html" class="logo">Ukinami Manga</a>
+        
+        <!-- เปลี่ยนเป็น form ตรงนี้ -->
+        <form class="search-bar" onsubmit="handleSearch(event)">
+            <input type="text" id="search-input" placeholder="ค้นหามังงะที่ต้องการ...">
+            <button type="submit">ค้นหา</button>
+        </form>
+
+        <nav>
+            <ul>
+                <li><a href="index.html">หน้าแรก</a></li>
+                <li><a href="all-manga.html" class="active">สินค้าทั้งหมด</a></li>
+                <li><a href="categories.html">หมวดหมู่</a></li>
+                <li><a href="cart.html">ตะกร้า (<span id="nav-cart-count">0</span>)</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="product-detail-card">
+            <div class="product-cover">
+                <img id="p-img" src="" alt="มังงะ">
+            </div>
+            <div class="product-info-detail">
+                <h1 class="detail-title" id="p-title">กำลังโหลด...</h1>
+                <div class="meta-info">หมวดหมู่: <span id="p-category">-</span></div>
+                <div class="meta-info">สำนักพิมพ์: <span id="p-publisher">-</span></div>
+                <div class="meta-info">สถานะ: <span style="color: #2ed573;">มีสินค้าพร้อมส่ง</span></div>
+                
+                <div class="detail-price" id="p-price">0 บาท</div>
+
+                <div class="detail-desc" id="p-desc">
+                    เรื่องย่อ: -
+                </div>
+
+                <div class="qty-control">
+                    <button class="qty-btn" onclick="adjustQty(-1)">-</button>
+                    <input type="number" id="detail-qty" class="qty-input" value="1" readonly>
+                    <button class="qty-btn" onclick="adjustQty(1)">+</button>
+                </div>
+
+                <button class="btn-add-cart" onclick="addCurrentToCart()">เพิ่มลงในตะกร้า</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Ukinami Manga. All rights reserved.</p>
+        <p>
+            <a href="about.html">เกี่ยวกับเรา</a> | 
+            <a href="contact.html">ติดต่อเรา</a> | 
+            <a href="faq.html">คำถามที่พบบ่อย</a>
+        </p>
+    </footer>
+
+    <script>
+        // ฐานข้อมูลมังงะครบทั้ง 15 เรื่อง
+        const productsDatabase = {
+            1: { title: 'หนุ่มเย็บผ้ากับสาวนักคอสเพลย์ เล่ม 5', price: 125, category: 'โรแมนติก / คลายเครียด', publisher: 'Luckpim', img: 'https://cdn-local.mebmarket.com/meb/server1/304164/Thumbnail/book_detail_large.gif?2', desc: 'เรื่องราวของวากานะ หนุ่มมัธยมผู้มีใจรักการทำตุ๊กตาฮินะ และมาริน สาวคอสเพลย์สุดสดใสที่เข้ามาเปลี่ยนแปลงชีวิตเขา' },
+            2: { title: 'คุณอาเรียโต๊ะข้างๆ พูดรัสเซียฯ เล่ม 4', price: 159, category: 'โรแมนติก / คลายเครียด', publisher: 'Phoenix Next', img: 'https://cdn-local.mebmarket.com/meb/server1/324945/Thumbnail/book_detail_large.gif?2', desc: 'คุณอาเรีย สาวสวยลูกครึ่งรัสเซียชอบพึมพำภาษารัสเซียหวานๆ ใส่มาซาจิกะ โดยไม่รู้เลยว่าเขาฟังออกทุกคำ!' },
+            3: { title: 'ขังดวลแข้ง Blue Lock เล่ม 26', price: 59, category: 'แอ็กชัน / ต่อสู้', publisher: 'Siam Inter Comics', img: 'https://bookwalker.in.th/_next/image/?url=https%3A%2F%2Fc.bookwalker.jp%2FcoverImage_3e27700e5a5a4e889e597dff7f105bb8.jpg&w=1280&q=75', desc: 'โครงการคัดสรรสุดยอดศูนย์หน้าอีโก้สูงเพื่อทีมชาติญี่ปุ่น การต่อสู้ในสนามฟุตบอลสุดดุเดือด' },
+            4: { title: 'มหาเวทย์ผนึกมาร เล่ม 30', price: 99, category: 'แอ็กชัน / ต่อสู้', publisher: 'Siam Inter Comics', img: 'https://cdn-local.mebmarket.com/meb/server1/357933/Thumbnail/book_detail_large.gif?2', desc: 'อิตาโดริ ยูจิ นักเรียนมัธยมปลายที่กลืนวัตถุสาปแช่งระดับพิเศษเข้าไป จนต้องเข้ามาสู่วงการไสยเวทเพื่อรวบรวมนิ้วของสุคุนะให้ครบ' },
+            5: { title: 'Chainsaw Man เล่ม 1', price: 90, category: 'แอ็กชัน / ต่อสู้', publisher: 'Siam Inter Comics', img: 'https://cdn-local.mebmarket.com/meb/server1/114703/Thumbnail/book_detail_large.gif?2', desc: 'เดนจิ เด็กหนุ่มผู้ใช้ชีวิตตกอับร่วมกับปีศาจเลื่อยยนต์ โปจิตะ จนเกิดเหตุการณ์ที่ทำให้เขากลายเป็น Chainsaw Man' },
+            6: { title: 'เกิดใหม่เป็นลูกโอชิ เล่ม 1', price: 95, category: 'สืบสวน / ดราม่า', publisher: 'Luckpim', img: 'https://cdn-local.mebmarket.com/meb/server1/225615/Thumbnail/book_detail_large.gif?5', desc: 'คุณหมอหนุ่มแฟนคลับไอดอลสาวชื่อดัง ไฮอิ เดินทางมาเกิดใหม่เป็นลูกชายของไอดอลที่ตนเองชื่นชอบ' },
+            7: { title: 'คำอธิษฐานในวันที่จากลา เล่ม 1', price: 99, category: 'ต่างโลก / แฟนตาซี', publisher: 'Siam Inter Comics', img: 'https://cdn-local.mebmarket.com/meb/server1/164232/Thumbnail/book_detail_large.gif?2', desc: 'เรื่องราวของเอลฟ์นักเมจ ฟรีเรน กับการเดินทางหลังการปราบราชาปีศาจเพื่อตามเข้าใจความหมายของชีวิตมนุษย์' },
+            8: { title: 'Spy x Family เล่ม 1', price: 80, category: 'แอ็กชัน / ต่อสู้', publisher: 'Siam Inter Comics', img: 'https://storage.naiin.com/system/application/bookstore/resource/product/202001/498858/1000230245_front_XXL.jpg?v=1725789292', desc: 'สายสืบระดับท็อปต้องสร้างครอบครัวกำมะลอ โดยมีภรรยาเป็นนักฆ่าและลูกสาวพลังจิตอ่านใจคนได้' },
+            9: { title: 'Kaiju No. 8 เล่ม 1', price: 99, category: 'แอ็กชัน / ต่อสู้', publisher: 'Siam Inter Comics', img: 'https://cdn-local.mebmarket.com/meb/server1/151585/Thumbnail/book_detail_large.gif?2', desc: 'ชายวัย 32 ปีที่ทำงานทำความสะอาดซากไคจู ได้รับพลังกลายร่างเป็นไคจูหมายเลข 8 สุดแกร่ง' },
+            10: { title: 'สารภาพรักกับคุณคางุยะซะดีๆ เล่ม 1', price: 70, category: 'โรแมนติก / คลายเครียด', publisher: 'Luckpim', img: 'https://cdn-local.mebmarket.com/meb/server1/124456/Thumbnail/book_detail_large.gif?2', desc: 'สงครามประสาทสุดฮาของสองอัจฉริยะประธานและรองประธานนักเรียนที่ต่างฝ่ายต่างรอให้อีกฝ่ายบอกรักก่อน' },
+            11: { title: 'เกิดชาตินี้พี่ต้องเทพ เล่ม 1', price: 259, category: 'ต่างโลก / แฟนตาซี', publisher: 'DEXpress', img: 'https://cdn-local.mebmarket.com/meb/server1/92885/Thumbnail/book_detail_large.gif?5', desc: 'ชายวัย 34 ปีผู้ล้มเหลวในชีวิตได้โอกาสไปเกิดใหม่ในโลกเวทมนตร์ และตั้งใจจะใช้ชีวิตใหม่ให้ดีที่สุด' },
+            12: { title: 'Bocchi the Rock! เล่ม 1', price: 169, category: 'โรแมนติก / คลายเครียด', publisher: 'Phoenix Next', img: 'https://cdn-local.mebmarket.com/meb/server1/297249/Thumbnail/book_detail_large.gif?2', desc: 'โกโต้ ฮิโตริ สาวน้อยผู้เป็นโรคกลัวสังคมแต่ฝึกมือกีตาร์จนเก่งกาจ ได้เข้าร่วมวงดนตรีและเริ่มต้นชีวิตวัยรุ่น' },
+            13: { title: 'Tokyo Revengers เล่ม 1', price: 59, category: 'แอ็กชัน / ต่อสู้', publisher: 'Siam Inter Comics', img: 'https://cdn-local.mebmarket.com/meb/server1/68702/Thumbnail/book_detail_large.gif?10', desc: 'ทาเคมิจิ หนุ่มล้มเหลวได้พลังย้อนเวลากลับไปสมัยมัธยมต้นเพื่อช่วยชีวิตอดีตแฟนสาวและเปลี่ยนอนาคต' },
+            14: { title: 'ผ่าพิภพไททัน เล่ม 34', price: 89, category: 'แอ็กชัน / ต่อสู้', publisher: 'Siam Inter Comics', img: 'https://cdn-local.mebmarket.com/meb/server1/166238/Thumbnail/book_detail_large.gif?2', desc: 'เล่มจบของมหาศึกการต่อสู้ระหว่างมนุษยชาติและเหล่าไททันอันยาวนาน' },
+            15: { title: 'Overlord เล่ม 1', price: 289, category: 'ต่างโลก / แฟนตาซี', publisher: 'DEXpress', img: 'https://cdn-local.mebmarket.com/meb/server1/92883/Thumbnail/book_detail_large.gif?4', desc: 'เมื่อเกมออนไลน์ปิดตัวลง แต่ประธานกิลด์กระดูกสุดแกร่งกลับหลุดเข้าไปอยู่ในโลกจริงของเกมพร้อมฐานทัพ' }
+        };
+
+        // ดึง ID จาก URL ?id=X (ถ้าไม่มีใช้ ID 4 เป็นค่าเริ่มต้น)
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id') || 4;
+        const currentProduct = productsDatabase[productId] || productsDatabase[4];
+
+        // แสดงผลข้อมูลตาม ID ที่กดเข้ามา
+        document.getElementById('p-title').textContent = currentProduct.title;
+        document.getElementById('p-price').textContent = currentProduct.price + ' บาท';
+        document.getElementById('p-category').textContent = currentProduct.category;
+        document.getElementById('p-publisher').textContent = currentProduct.publisher;
+        document.getElementById('p-img').src = currentProduct.img;
+        document.getElementById('p-desc').textContent = 'เรื่องย่อ: ' + currentProduct.desc;
+
+        function adjustQty(change) {
+            const input = document.getElementById('detail-qty');
+            let val = parseInt(input.value) + change;
+            if (val >= 1) input.value = val;
+        }
+
+        function addCurrentToCart() {
+            const qty = parseInt(document.getElementById('detail-qty').value);
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let existingItem = cart.find(item => item.id == productId);
+
+            if (existingItem) {
+                existingItem.qty += qty;
+            } else {
+                cart.push({
+                    id: parseInt(productId),
+                    title: currentProduct.title,
+                    price: currentProduct.price,
+                    img: currentProduct.img,
+                    qty: qty
+                });
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            alert(`เพิ่ม "${currentProduct.title}" จำนวน ${qty} เล่ม ลงในตะกร้าเรียบร้อยแล้ว!`);
+        }
+
+        function updateCartCount() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('nav-cart-count').textContent = totalQty;
+        }
+
+        updateCartCount();
+    </script>
+</body>
+</html>

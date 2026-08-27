@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ukinami Manga - คำถามที่พบบ่อย (FAQ)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Prompt', sans-serif; }
+        body { background-color: #121212; color: #e0e0e0; }
+
+        header { 
+            background-color: #1f1f1f; 
+            padding: 15px 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+        }
+        .logo { font-size: 24px; font-weight: 600; color: #ff4757; text-decoration: none; }
+        
+        .search-bar { 
+            position: relative; 
+            display: flex; 
+            width: 40%; 
+        }
+        .search-bar input { 
+            width: 100%; 
+            padding: 8px 15px; 
+            border: none; 
+            border-radius: 20px 0 0 20px; 
+            outline: none; 
+            background: #2f3542; 
+            color: #fff; 
+        }
+        .search-bar button { 
+            padding: 8px 15px; 
+            border: none; 
+            background-color: #ff4757; 
+            color: white; 
+            border-radius: 0 20px 20px 0; 
+            cursor: pointer; 
+            transition: 0.3s; 
+        }
+        .search-bar button:hover { background-color: #ff6b81; }
+
+        .search-results-dropdown {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            width: 100%;
+            background-color: #1f1f1f;
+            border: 1px solid #333;
+            border-radius: 8px;
+            max-height: 250px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+            display: none;
+        }
+        .search-result-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            color: #e0e0e0;
+            font-size: 14px;
+            border-bottom: 1px solid #2f3542;
+            transition: all 0.2s ease;
+        }
+        .search-result-item:hover { background-color: #ff4757; color: #fff; padding-left: 20px; }
+
+        nav ul { display: flex; list-style: none; gap: 20px; }
+        nav a { color: #e0e0e0; text-decoration: none; font-size: 15px; transition: 0.3s; }
+        nav a:hover, nav a.active { color: #ff4757; }
+
+        .container { width: 90%; max-width: 900px; margin: 40px auto; min-height: 60vh; }
+        .section-title { font-size: 24px; margin-bottom: 20px; border-left: 4px solid #ff4757; padding-left: 10px; color: #fff; }
+
+        .faq-item {
+            background: #1f1f1f;
+            border: 1px solid #333;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+        .faq-question {
+            padding: 18px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1f1f1f;
+            user-select: none;
+        }
+        .faq-question:hover { color: #ff4757; }
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            background: #161616;
+            color: #aaa;
+            font-size: 14px;
+            line-height: 1.6;
+            border-top: 1px solid transparent;
+        }
+        .faq-item.active .faq-answer {
+            padding: 15px 20px;
+            max-height: 200px;
+            border-top-color: #2f3542;
+        }
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+            color: #ff4757;
+        }
+        .faq-icon { transition: 0.3s; font-size: 18px; }
+
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 15px; }
+            .search-bar { width: 100%; }
+        }
+
+        footer { background-color: #1f1f1f; text-align: center; padding: 20px; margin-top: 50px; color: #a0a0a0; font-size: 14px; }
+        footer a { color: #a0a0a0; text-decoration: none; margin: 0 10px; transition: 0.3s; }
+        footer a:hover { color: #ff4757; }
+    </style>
+</head>
+<link rel="icon" type="image/x-icon" href= "uki.ico">
+<body>
+
+    <header>
+        <a href="index.html" class="logo">Ukinami Manga</a>
+        
+        <form class="search-bar" onsubmit="handleSearch(event)" autocomplete="off">
+            <input type="text" id="search-input" placeholder="ค้นหามังงะที่ต้องการ..." oninput="showLiveSearch(this.value)">
+            <button type="submit">ค้นหา</button>
+            <div id="search-results" class="search-results-dropdown"></div>
+        </form>
+
+        <nav>
+            <ul>
+                <li><a href="index.html">หน้าแรก</a></li>
+                <li><a href="all-manga.html">สินค้าทั้งหมด</a></li>
+                <li><a href="categories.html">หมวดหมู่</a></li>
+                <li><a href="cart.html">ตะกร้า (<span id="nav-cart-count">0</span>)</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2 class="section-title">คำถามที่พบบ่อย (FAQ)</h2>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>1. สินค้าในร้านเป็นลิขสิทธิ์แท้หรือไม่?</span>
+                <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                สินค้าทุกชิ้นใน MangaShop เป็นหนังสือมังงะและของสะสมลิขสิทธิ์แท้ 100% สั่งตรงจากสำนักพิมพ์ชั้นนำในประเทศไทยครับ
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>2. ใช้เวลาจัดส่งสินค้ากี่วัน?</span>
+                <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                ทางร้านจัดส่งสินค้าภายใน 1-2 วันทำการ โดยปกติสินค้าจะถึงมือลูกค้าภายใน 2-3 วันทำการสำหรับกรุงเทพฯ และปริมณฑล และ 3-5 วันทำการสำหรับต่างจังหวัดครับ
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>3. มีช่องทางการชำระเงินแบบใดบ้าง?</span>
+                <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                เรารองรับการชำระเงินผ่านการสแกน QR Code (PromptPay), การโอนเงินผ่านธนาคาร และบัตรเครดิต/เดบิตครับ
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>4. หากหนังสือชำรุดจากการขนส่ง สามารถเปลี่ยนคืนได้หรือไม่?</span>
+                <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                หากพบว่าหนังสือมีหน้าขาด หน้าสลับ หรือชำรุดเสียหายหนักจากการขนส่ง สามารถติดต่อทีมงานผ่านหน้า "ติดต่อเรา" พร้อมถ่ายวิดีโอขณะแกะพัสดุเพื่อเคลมเล่มใหม่ได้ฟรีภายใน 7 วันครับ
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>5. หนังสือ Pre-order จะได้รับสินค้าเมื่อไหร่?</span>
+                <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                สินค้าสั่งซื้อล่วงหน้า (Pre-order) จะถูกจัดส่งตามวันและเวลาที่สำนักพิมพ์กำหนด โดยระบบจะส่งอีเมลแจ้งเตือนทันทีเมื่อเริ่มจัดส่งครับ
+            </div>
+        </div>
+    </div>
+    <div id="music-player" style="position: fixed; bottom: 20px; right: 20px; background: #1f1f1f; border: 1px solid #ff4757; padding: 10px 15px; border-radius: 30px; display: flex; align-items: center; gap: 10px; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+    <span style="font-size: 14px; color: #fff;">🎵 BGM</span>
+    <button id="bgm-btn" onclick="toggleMusic()" style="background: #ff4757; color: white; border: none; padding: 5px 12px; border-radius: 15px; cursor: pointer; font-size: 12px;">▶ เปิดเพลง</button>
+    <audio id="bgm-audio" loop src="video 1.mp3"></audio>
+</div>
+
+    <footer>
+        <p>&copy; 2026 Ukinami Manga . All rights reserved.</p>
+        <p>
+            <a href="about.html">เกี่ยวกับเรา</a> | 
+            <a href="contact.html">ติดต่อเรา</a> | 
+            <a href="faq.html" style="color:#ff4757;">คำถามที่พบบ่อย</a>
+        </p>
+    </footer>
+
+    <script>
+        const searchDatabase = [
+            { id: 1, title: 'หนุ่มเย็บผ้ากับสาวนักคอสเพลย์ เล่ม 5' },
+            { id: 2, title: 'คุณอาเรียโต๊ะข้างๆ พูดรัสเซียฯ เล่ม 4' },
+            { id: 3, title: 'ขังดวลแข้ง Blue Lock เล่ม 26' },
+            { id: 4, title: 'มหาเวทย์ผนึกมาร เล่ม 30' },
+            { id: 5, title: 'Chainsaw Man เล่ม 1' },
+            { id: 6, title: 'เกิดใหม่เป็นลูกโอชิ เล่ม 1' },
+            { id: 7, title: 'คำอธิษฐานในวันที่จากลา เล่ม 1' },
+            { id: 8, title: 'Spy x Family เล่ม 1' },
+            { id: 9, title: 'Kaiju No. 8 เล่ม 1' },
+            { id: 10, title: 'สารภาพรักกับคุณคางุยะซะดีๆ เล่ม 1' },
+            { id: 11, title: 'เกิดชาตินี้พี่ต้องเทพ เล่ม 1' },
+            { id: 12, title: 'Bocchi the Rock! เล่ม 1' },
+            { id: 13, title: 'Tokyo Revengers เล่ม 1' },
+            { id: 14, title: 'ผ่าพิภพไททัน เล่ม 34' },
+            { id: 15, title: 'Overlord เล่ม 1' }
+        ];
+
+        function toggleFaq(element) {
+            const item = element.parentElement;
+            item.classList.toggle('active');
+        }
+
+        function updateCartCount() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('nav-cart-count').textContent = totalQty;
+        }
+
+        function showLiveSearch(query) {
+            const resultsBox = document.getElementById('search-results');
+            const cleanQuery = query.trim().toLowerCase();
+
+            if (!cleanQuery) {
+                resultsBox.style.display = 'none';
+                return;
+            }
+
+            const matchedProducts = searchDatabase.filter(item => 
+                item.title.toLowerCase().includes(cleanQuery)
+            );
+
+            if (matchedProducts.length > 0) {
+                resultsBox.innerHTML = matchedProducts.map(item => `
+                    <div class="search-result-item" onclick="window.location.href='product-detail.html?id=${item.id}'">
+                        ${item.title}
+                    </div>
+                `).join('');
+                resultsBox.style.display = 'block';
+            } else {
+                resultsBox.innerHTML = `<div class="search-result-item" style="cursor:default; color:#aaa;">ไม่พบสินค้าที่ค้นหา</div>`;
+                resultsBox.style.display = 'block';
+            }
+        }
+
+        function handleSearch(e) {
+            e.preventDefault();
+            let query = document.getElementById('search-input').value.trim();
+            if (query) {
+                window.location.href = `all-manga.html?search=${encodeURIComponent(query)}`;
+            }
+        }
+
+        document.addEventListener('click', function(e) {
+            const searchBar = document.querySelector('.search-bar');
+            if (searchBar && !searchBar.contains(e.target)) {
+                document.getElementById('search-results').style.display = 'none';
+            }
+        });
+        const audio = document.getElementById('bgm-audio');
+    const btn = document.getElementById('bgm-btn');
+
+    // 1. ดึงข้อมูลตำแหน่งเวลา และสถานะการเล่นเมื่อโหลดหน้าเว็บ
+    document.addEventListener('DOMContentLoaded', () => {
+        const isPlaying = localStorage.getItem('bgm_playing') === 'true';
+        const savedTime = parseFloat(localStorage.getItem('bgm_time') || 0);
+
+        // กำหนดเวลาเล่นต่อจากเดิม
+        if (savedTime && !isNaN(savedTime)) {
+            audio.currentTime = savedTime;
+        }
+
+        // หากก่อนเปลี่ยนหน้าเพลงกำลังเล่นอยู่ ให้เล่นต่อ
+        if (isPlaying) {
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    updateBtnState(true);
+                }).catch(err => {
+                    // หากเบราว์เซอร์บล็อก Autoplay ให้ปรับปุ่มรอผู้ใช้กด
+                    console.log("Autoplay blocked:", err);
+                    localStorage.setItem('bgm_playing', 'false');
+                    updateBtnState(false);
+                });
+            }
+        } else {
+            updateBtnState(false);
+        }
+    });
+
+    // 2. เซฟตำแหน่งเวลาเมื่อผู้ใช้กำลังจะกดเปลี่ยนหน้า หรือปิดหน้าต่าง
+    window.addEventListener('beforeunload', () => {
+        if (!audio.paused) {
+            localStorage.setItem('bgm_time', audio.currentTime);
+        }
+    });
+
+    // 3. ฟังก์ชันเปิด/ปิดเพลง
+    function toggleMusic() {
+        if (audio.paused) {
+            audio.play().then(() => {
+                localStorage.setItem('bgm_playing', 'true');
+                updateBtnState(true);
+            }).catch(err => {
+                console.log("Error playing audio:", err);
+            });
+        } else {
+            audio.pause();
+            localStorage.setItem('bgm_playing', 'false');
+            localStorage.setItem('bgm_time', audio.currentTime);
+            updateBtnState(false);
+        }
+    }
+
+    // 4. อัปเดตข้อความและสีของปุ่มเปิด/ปิด
+    function updateBtnState(isPlaying) {
+        if (isPlaying) {
+            btn.textContent = '⏸ หยุดเพลง';
+            btn.style.background = '#2ed573';
+        } else {
+            btn.textContent = '▶ เปิดเพลง';
+            btn.style.background = '#ff4757';
+        }
+    }
+
+        updateCartCount();
+    </script>
+</body>
+</html>
