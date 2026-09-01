@@ -368,7 +368,7 @@
     }
     function updateVisitorCount() {
         // ดึงยอดรวมทั้งหมดจาก localStorage (หากยังไม่มี ให้เริ่มที่ 100)
-        let totalVisits = parseInt(localStorage.getItem('site_visits') || '100');
+        let totalVisits = parseInt(localStorage.getItem('site_visits') || '1');
         
         // เช็คว่าแท็บนี้เคยนับไปหรือยังในเซสชันนี้
         const hasVisitedThisSession = sessionStorage.getItem('has_visited');
