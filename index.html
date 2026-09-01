@@ -366,18 +366,21 @@
             btn.style.background = '#ff4757';
         }
     }
-    function updateVisitorCount() {
-        // ดึงยอดรวมทั้งหมดจาก localStorage (หากยังไม่มี ให้เริ่มที่ 100)
+   function updateVisitorCount() {
+        // เปลี่ยนค่าเริ่มต้นจาก '100' เป็น '1'
         let totalVisits = parseInt(localStorage.getItem('site_visits') || '1');
         
         // เช็คว่าแท็บนี้เคยนับไปหรือยังในเซสชันนี้
         const hasVisitedThisSession = sessionStorage.getItem('has_visited');
 
-        // ถ้ายังไม่เคยเข้าในแท็บนี้ (เช่น เพิ่งเปิดเว็บเข้ามาใหม่) ให้บวกยอดเพิ่ม 1
+        // ถ้ายังไม่เคยเข้าในแท็บนี้ ให้บวกยอดเพิ่ม 1
         if (!hasVisitedThisSession) {
-            totalVisits += 1;
+            // กรณีเป็นครั้งแรกสุดที่เปิดเว็บ ยอดจะเป็น 1 (ไม่บวกเพิ่ม)
+            if (localStorage.getItem('site_visits') !== null) {
+                totalVisits += 1;
+            }
             localStorage.setItem('site_visits', totalVisits);
-            sessionStorage.setItem('has_visited', 'true'); // ทำเครื่องหมายว่าแท็บนี้นับแล้ว
+            sessionStorage.setItem('has_visited', 'true');
         }
 
         // แสดงผลตัวเลขยอดรวม
