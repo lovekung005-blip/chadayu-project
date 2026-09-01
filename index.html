@@ -357,25 +357,20 @@
     }
 
     // 4. อัปเดตข้อความและสีของปุ่มเปิด/ปิด
-    function updateBtnState(isPlaying) {
-        if (isPlaying) {
-            btn.textContent = '⏸ หยุดเพลง';
-            btn.style.background = '#2ed573';
-        } else {
-            btn.textContent = '▶ เปิดเพลง';
-            btn.style.background = '#ff4757';
-        }
-    }
-   function updateVisitorCount() {
-        // เปลี่ยนค่าเริ่มต้นจาก '100' เป็น '1'
-        let totalVisits = parseInt(localStorage.getItem('site_visits') || '1');
+function updateVisitorCount() {
+        // 1. ดึงค่านับเดิม หากยังไม่เคยมีในเครื่องเลย ให้เริ่มนับที่ 1
+        let totalVisits = parseInt(localStorage.getItem('site_visits'));
         
-        // เช็คว่าแท็บนี้เคยนับไปหรือยังในเซสชันนี้
+        if (isNaN(totalVisits)) {
+            totalVisits = 1;
+        }
+
+        // 2. เช็คว่าแท็บนี้เคยนับไปหรือยังในเซสชันนี้
         const hasVisitedThisSession = sessionStorage.getItem('has_visited');
 
-        // ถ้ายังไม่เคยเข้าในแท็บนี้ ให้บวกยอดเพิ่ม 1
+        // 3. ถ้าเพิ่งเปิดแท็บ/เว็บเข้ามาใหม่ในเซสชันนี้ ให้เพิ่มยอด +1
         if (!hasVisitedThisSession) {
-            // กรณีเป็นครั้งแรกสุดที่เปิดเว็บ ยอดจะเป็น 1 (ไม่บวกเพิ่ม)
+            // ถ้าไม่ใช่การเปิดครั้งแรกสุดในประวัติศาสตร์ ให้บวกเพิ่ม 1
             if (localStorage.getItem('site_visits') !== null) {
                 totalVisits += 1;
             }
@@ -383,11 +378,17 @@
             sessionStorage.setItem('has_visited', 'true');
         }
 
-        // แสดงผลตัวเลขยอดรวม
-        document.getElementById('visit-count').textContent = totalVisits.toLocaleString();
+        // 4. แสดงผลตัวเลขยอดรวม
+        const visitElem = document.getElementById('visit-count');
+        if (visitElem) {
+            visitElem.textContent = totalVisits.toLocaleString();
+        }
     }
 
-    document.addEventListener('DOMContentLoaded', updateVisitorCount);
+    document.addEventListener('DOMContentLoaded', () => {
+        updateCartCount();
+        updateVisitorCount();
+    });
     </script>
 </body>
 </html>
