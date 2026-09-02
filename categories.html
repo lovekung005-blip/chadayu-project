@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ukinami Manga - หมวดหมู่สินค้า</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="uki.ico">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Prompt', sans-serif; }
         body { background-color: #121212; color: #e0e0e0; }
@@ -84,13 +85,11 @@
         footer a:hover { color: #ff4757; }
     </style>
 </head>
-<link rel="icon" type="image/x-icon" href= "uki.ico">
 <body>
 
     <header>
         <a href="index.html" class="logo">Ukinami Manga</a>
         
-        <!-- เปลี่ยนเป็น form ตรงนี้ -->
         <form class="search-bar" onsubmit="handleSearch(event)">
             <input type="text" id="search-input" placeholder="ค้นหามังงะที่ต้องการ...">
             <button type="submit">ค้นหา</button>
@@ -99,8 +98,8 @@
         <nav>
             <ul>
                 <li><a href="index.html">หน้าแรก</a></li>
-                <li><a href="all-manga.html" >สินค้าทั้งหมด</a></li>
-                <li><a href="categories.html"class="active">หมวดหมู่</a></li>
+                <li><a href="all-manga.html">สินค้าทั้งหมด</a></li>
+                <li><a href="categories.html" class="active">หมวดหมู่</a></li>
                 <li><a href="cart.html">ตะกร้า (<span id="nav-cart-count">0</span>)</a></li>
             </ul>
         </nav>
@@ -111,28 +110,29 @@
             <h2 class="section-title">แยกตามแนวการ์ตูน</h2>
         </div>
         <div class="category-grid">
-            <a href="all-manga.html" class="category-card">
+            <!-- ส่งค่า Query Parameter ไปยังหน้า all-manga.html เพื่อให้กรองข้อมูลได้จริง -->
+            <a href="all-manga.html?cat=action" class="category-card">
                 <div class="category-icon">⚔️</div>
                 <div>
                     <div class="category-name">แอ็กชัน / ต่อสู้</div>
                     <div class="category-count">8 รายการ</div>
                 </div>
             </a>
-            <a href="all-manga.html" class="category-card">
+            <a href="all-manga.html?cat=fantasy" class="category-card">
                 <div class="category-icon">🔮</div>
                 <div>
                     <div class="category-name">ต่างโลก / แฟนตาซี</div>
                     <div class="category-count">3 รายการ</div>
                 </div>
             </a>
-            <a href="all-manga.html" class="category-card">
+            <a href="all-manga.html?cat=romance" class="category-card">
                 <div class="category-icon">❤️</div>
                 <div>
                     <div class="category-name">โรแมนติก / คลายเครียด</div>
                     <div class="category-count">4 รายการ</div>
                 </div>
             </a>
-            <a href="all-manga.html" class="category-card">
+            <a href="all-manga.html?cat=drama" class="category-card">
                 <div class="category-icon">🔍</div>
                 <div>
                     <div class="category-name">สืบสวน / ดราม่า</div>
@@ -145,45 +145,42 @@
             <h2 class="section-title">แยกตามสำนักพิมพ์</h2>
         </div>
         <div class="category-grid">
-            <a href="all-manga.html" class="category-card">
+            <a href="all-manga.html?pub=siam" class="category-card">
                 <div class="category-icon">📚</div>
                 <div>
                     <div class="category-name">Siam Inter Comics</div>
                     <div class="category-count">9 รายการ</div>
                 </div>
             </a>
-            <a href="all-manga.html" class="category-card">
+            <a href="all-manga.html?pub=dexpress" class="category-card">
                 <div class="category-icon">📚</div>
                 <div>
                     <div class="category-name">DEXpress</div>
                     <div class="category-count">2 รายการ</div>
                 </div>
             </a>
-            <a href="all-manga.html" class="category-card">
+            <a href="all-manga.html?pub=phoenix" class="category-card">
                 <div class="category-icon">📚</div>
                 <div>
                     <div class="category-name">Phoenix Next</div>
                     <div class="category-count">2 รายการ</div>
                 </div>
             </a>
-            <a href="all-manga.html" class="category-card">
+            <a href="all-manga.html?pub=luckpim" class="category-card">
                 <div class="category-icon">📚</div>
                 <div>
                     <div class="category-name">Luckpim</div>
                     <div class="category-count">3 รายการ</div>
                 </div>
-
-
-            
-                
-
             </a>
-            <div id="music-player" style="position: fixed; bottom: 20px; right: 20px; background: #1f1f1f; border: 1px solid #ff4757; padding: 10px 15px; border-radius: 30px; display: flex; align-items: center; gap: 10px; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
-    <span style="font-size: 14px; color: #fff;">🎵 BGM</span>
-    <button id="bgm-btn" onclick="toggleMusic()" style="background: #ff4757; color: white; border: none; padding: 5px 12px; border-radius: 15px; cursor: pointer; font-size: 12px;">▶ เปิดเพลง</button>
-    <audio id="bgm-audio" loop src="video 1.mp3"></audio>
-</div>
         </div>
+    </div>
+
+    <!-- ย้ายกล่องเล่นเพลงออกมาอยู่นอก .category-grid เพื่อไม่ให้ดันส่วนแสดงผลเบี้ยว -->
+    <div id="music-player" style="position: fixed; bottom: 20px; right: 20px; background: #1f1f1f; border: 1px solid #ff4757; padding: 10px 15px; border-radius: 30px; display: flex; align-items: center; gap: 10px; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+        <span style="font-size: 14px; color: #fff;">🎵 BGM</span>
+        <button id="bgm-btn" onclick="toggleMusic()" style="background: #ff4757; color: white; border: none; padding: 5px 12px; border-radius: 15px; cursor: pointer; font-size: 12px;">▶ เปิดเพลง</button>
+        <audio id="bgm-audio" loop src="video 1.mp3"></audio>
     </div>
 
     <footer>
@@ -194,28 +191,38 @@
             <a href="faq.html">คำถามที่พบบ่อย</a>
         </p>
     </footer>
+
     <script>
     const audio = document.getElementById('bgm-audio');
     const btn = document.getElementById('bgm-btn');
 
-    // 1. ดึงข้อมูลตำแหน่งเวลา และสถานะการเล่นเมื่อโหลดหน้าเว็บ
+    // 1. อัปเดตจำนวนสินค้าในตะกร้าบนแถบเมนู
+    function updateCartCount() {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+        const navCartElem = document.getElementById('nav-cart-count');
+        if(navCartElem) {
+            navCartElem.textContent = totalQty;
+        }
+    }
+
+    // 2. ดึงข้อมูลตำแหน่งเวลา และสถานะการเล่น BGM
     document.addEventListener('DOMContentLoaded', () => {
+        updateCartCount();
+
         const isPlaying = localStorage.getItem('bgm_playing') === 'true';
         const savedTime = parseFloat(localStorage.getItem('bgm_time') || 0);
 
-        // กำหนดเวลาเล่นต่อจากเดิม
         if (savedTime && !isNaN(savedTime)) {
             audio.currentTime = savedTime;
         }
 
-        // หากก่อนเปลี่ยนหน้าเพลงกำลังเล่นอยู่ ให้เล่นต่อ
         if (isPlaying) {
             const playPromise = audio.play();
             if (playPromise !== undefined) {
                 playPromise.then(() => {
                     updateBtnState(true);
                 }).catch(err => {
-                    // หากเบราว์เซอร์บล็อก Autoplay ให้ปรับปุ่มรอผู้ใช้กด
                     console.log("Autoplay blocked:", err);
                     localStorage.setItem('bgm_playing', 'false');
                     updateBtnState(false);
@@ -226,14 +233,12 @@
         }
     });
 
-    // 2. เซฟตำแหน่งเวลาเมื่อผู้ใช้กำลังจะกดเปลี่ยนหน้า หรือปิดหน้าต่าง
     window.addEventListener('beforeunload', () => {
         if (!audio.paused) {
             localStorage.setItem('bgm_time', audio.currentTime);
         }
     });
 
-    // 3. ฟังก์ชันเปิด/ปิดเพลง
     function toggleMusic() {
         if (audio.paused) {
             audio.play().then(() => {
@@ -250,7 +255,6 @@
         }
     }
 
-    // 4. อัปเดตข้อความและสีของปุ่มเปิด/ปิด
     function updateBtnState(isPlaying) {
         if (isPlaying) {
             btn.textContent = '⏸ หยุดเพลง';
@@ -260,7 +264,6 @@
             btn.style.background = '#ff4757';
         }
     }
-</script>
-
+    </script>
 </body>
 </html>
