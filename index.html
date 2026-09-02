@@ -279,7 +279,7 @@
         </p>
     </footer>
 
-    <script>
+        <script>
         function addToCart(id, title, price, img) {
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
             let existingItem = cart.find(item => item.id === id);
@@ -302,93 +302,97 @@
         }
 
         const audio = document.getElementById('bgm-audio');
-    const btn = document.getElementById('bgm-btn');
+        const btn = document.getElementById('bgm-btn');
 
-    // 1. ดึงข้อมูลตำแหน่งเวลา และสถานะการเล่นเมื่อโหลดหน้าเว็บ
-    document.addEventListener('DOMContentLoaded', () => {
-        const isPlaying = localStorage.getItem('bgm_playing') === 'true';
-        const savedTime = parseFloat(localStorage.getItem('bgm_time') || 0);
+        // 1. ดึงข้อมูลตำแหน่งเวลา และสถานะการเล่นเมื่อโหลดหน้าเว็บ
+        document.addEventListener('DOMContentLoaded', () => {
+            const isPlaying = localStorage.getItem('bgm_playing') === 'true';
+            const savedTime = parseFloat(localStorage.getItem('bgm_time') || 0);
 
-        // กำหนดเวลาเล่นต่อจากเดิม
-        if (savedTime && !isNaN(savedTime)) {
-            audio.currentTime = savedTime;
-        }
+            if (savedTime && !isNaN(savedTime)) {
+                audio.currentTime = savedTime;
+            }
 
-        // หากก่อนเปลี่ยนหน้าเพลงกำลังเล่นอยู่ ให้เล่นต่อ
-        if (isPlaying) {
-            const playPromise = audio.play();
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
+            if (isPlaying) {
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        updateBtnState(true);
+                    }).catch(err => {
+                        console.log("Autoplay blocked:", err);
+                        localStorage.setItem('bgm_playing', 'false');
+                        updateBtnState(false);
+                    });
+                }
+            } else {
+                updateBtnState(false);
+            }
+        });
+
+        // 2. เซฟตำแหน่งเวลาเมื่อผู้ใช้กำลังจะกดเปลี่ยนหน้า
+        window.addEventListener('beforeunload', () => {
+            if (!audio.paused) {
+                localStorage.setItem('bgm_time', audio.currentTime);
+            }
+        });
+
+        // 3. ฟังก์ชันเปิด/ปิดเพลง
+        function toggleMusic() {
+            if (audio.paused) {
+                audio.play().then(() => {
+                    localStorage.setItem('bgm_playing', 'true');
                     updateBtnState(true);
                 }).catch(err => {
-                    // หากเบราว์เซอร์บล็อก Autoplay ให้ปรับปุ่มรอผู้ใช้กด
-                    console.log("Autoplay blocked:", err);
-                    localStorage.setItem('bgm_playing', 'false');
-                    updateBtnState(false);
+                    console.log("Error playing audio:", err);
                 });
+            } else {
+                audio.pause();
+                localStorage.setItem('bgm_playing', 'false');
+                localStorage.setItem('bgm_time', audio.currentTime);
+                updateBtnState(false);
             }
-        } else {
-            updateBtnState(false);
-        }
-    });
-
-    // 2. เซฟตำแหน่งเวลาเมื่อผู้ใช้กำลังจะกดเปลี่ยนหน้า หรือปิดหน้าต่าง
-    window.addEventListener('beforeunload', () => {
-        if (!audio.paused) {
-            localStorage.setItem('bgm_time', audio.currentTime);
-        }
-    });
-
-    // 3. ฟังก์ชันเปิด/ปิดเพลง
-    function toggleMusic() {
-        if (audio.paused) {
-            audio.play().then(() => {
-                localStorage.setItem('bgm_playing', 'true');
-                updateBtnState(true);
-            }).catch(err => {
-                console.log("Error playing audio:", err);
-            });
-        } else {
-            audio.pause();
-            localStorage.setItem('bgm_playing', 'false');
-            localStorage.setItem('bgm_time', audio.currentTime);
-            updateBtnState(false);
-        }
-    }
-
-    // 4. อัปเดตข้อความและสีของปุ่มเปิด/ปิด
-function updateVisitorCount() {
-        // 1. ดึงค่านับเดิม หากยังไม่เคยมีในเครื่องเลย ให้เริ่มนับที่ 1
-        let totalVisits = parseInt(localStorage.getItem('site_visits'));
-        
-        if (isNaN(totalVisits)) {
-            totalVisits = 1;
         }
 
-        // 2. เช็คว่าแท็บนี้เคยนับไปหรือยังในเซสชันนี้
-        const hasVisitedThisSession = sessionStorage.getItem('has_visited');
-
-        // 3. ถ้าเพิ่งเปิดแท็บ/เว็บเข้ามาใหม่ในเซสชันนี้ ให้เพิ่มยอด +1
-        if (!hasVisitedThisSession) {
-            // ถ้าไม่ใช่การเปิดครั้งแรกสุดในประวัติศาสตร์ ให้บวกเพิ่ม 1
-            if (localStorage.getItem('site_visits') !== null) {
-                totalVisits += 1;
+        // 4. อัปเดตข้อความและสีของปุ่มเปิด/ปิด (เพิ่มฟังก์ชันนี้ที่หายไป)
+        function updateBtnState(isPlaying) {
+            if (isPlaying) {
+                btn.textContent = '⏸ หยุดเพลง';
+                btn.style.background = '#2ed573'; // เปลี่ยนเป็นสีเขียวเมื่อเล่นเพลง
+            } else {
+                btn.textContent = '▶ เปิดเพลง';
+                btn.style.background = '#ff4757'; // เปลี่ยนเป็นสีแดงเมื่อหยุดเพลง
             }
-            localStorage.setItem('site_visits', totalVisits);
-            sessionStorage.setItem('has_visited', 'true');
         }
 
-        // 4. แสดงผลตัวเลขยอดรวม
-        const visitElem = document.getElementById('visit-count');
-        if (visitElem) {
-            visitElem.textContent = totalVisits.toLocaleString();
-        }
-    }
+        // 5. ฟังก์ชันนับจำนวนผู้เข้าชม
+        function updateVisitorCount() {
+            let totalVisits = parseInt(localStorage.getItem('site_visits'));
+            
+            if (isNaN(totalVisits)) {
+                totalVisits = 1;
+            }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        updateCartCount();
-        updateVisitorCount();
-    });
+            const hasVisitedThisSession = sessionStorage.getItem('has_visited');
+
+            if (!hasVisitedThisSession) {
+                if (localStorage.getItem('site_visits') !== null) {
+                    totalVisits += 1;
+                }
+                localStorage.setItem('site_visits', totalVisits);
+                sessionStorage.setItem('has_visited', 'true');
+            }
+
+            const visitElem = document.getElementById('visit-count');
+            if (visitElem) {
+                visitElem.textContent = totalVisits.toLocaleString();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCount();
+            updateVisitorCount();
+        });
     </script>
+
 </body>
 </html>
